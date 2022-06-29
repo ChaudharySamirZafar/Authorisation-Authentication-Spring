@@ -12,6 +12,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
+/**
+ * @author samir.zafar
+ * @version 1.0
+ * @since 28/06/2022
+ */
 @RestController
 @RequestMapping( "/api/v1/auth")
 @RequiredArgsConstructor
@@ -42,6 +47,11 @@ public class UserController {
     }
 }
 
+/**
+ * @author samir.zafar
+ * @version 1.0
+ * @since 28/06/2022
+ */
 @Data
 class RoleToUserForm {
     private String username;

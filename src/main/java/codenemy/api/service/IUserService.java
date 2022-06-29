@@ -5,6 +5,11 @@ import codenemy.api.model.User;
 
 import java.util.List;
 
+/**
+ * @author samir.zafar
+ * @version 1.0
+ * @since 28/06/2022
+ */
 public interface IUserService {
     User saveUser(User user);
     Role saveRole(Role role);
