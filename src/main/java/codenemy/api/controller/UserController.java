@@ -18,7 +18,7 @@ import java.util.List;
  * @since 28/06/2022
  */
 @RestController
-@RequestMapping( "/api/v1")
+@RequestMapping( "/api")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
