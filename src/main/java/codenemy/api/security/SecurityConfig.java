@@ -5,7 +5,6 @@ import codenemy.api.filter.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,6 +14,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
+
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 
 /**
  * @author samir.zafar
@@ -36,12 +41,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         CustomAuthenticationFilter customAuthenticationFilter =
                 new CustomAuthenticationFilter(authenticationManagerBean());
 
-        customAuthenticationFilter.setFilterProcessesUrl("/api/v1/login");
-        // We want to use a JWT token system.
+        customAuthenticationFilter.setFilterProcessesUrl("/api/login");
+
         http.csrf().disable();
+
+        // This is so we can fetch from a React application using local host
+        http.cors().configurationSource(request -> {
+            var cors = new CorsConfiguration();
+            cors.setAllowedOrigins(List.of("http://localhost:3000"));
+            cors.setAllowedMethods(List.of("GET","POST", "PUT", "DELETE", "OPTIONS"));
+            cors.setAllowedHeaders(List.of("*"));
+            return cors;
+        }).and();
+
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.authorizeRequests().antMatchers("/api/v1/**").permitAll();
+        // Requests that anyone should be able to make
+        http.authorizeRequests().antMatchers(POST, "/api/user/register").permitAll();
+        http.authorizeRequests().antMatchers("/api/login").permitAll();
+
+        // Requests that only certain members should be able to make.
+        //http.authorizeRequests().antMatchers("/api/users").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers("/api/users").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers("/api/user/AddRoleToUser").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers("/api/user/role").hasAnyAuthority("ROLE_ADMIN");
 
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(customAuthenticationFilter);
