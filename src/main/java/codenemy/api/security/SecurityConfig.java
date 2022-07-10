@@ -61,7 +61,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/api/login").permitAll();
 
         // Requests that only certain members should be able to make.
-        //http.authorizeRequests().antMatchers("/api/users").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers("/api/users").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers("/api/user/AddRoleToUser").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers("/api/user/role").hasAnyAuthority("ROLE_ADMIN");
