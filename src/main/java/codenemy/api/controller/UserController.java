@@ -29,10 +29,10 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getUsers());
     }
 
-    @PostMapping("/user/save")
+    @PostMapping("/user/register")
     @CrossOrigin("http://localhost:3000")
     public ResponseEntity<User>saveUser(@RequestBody User user){
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/register").toUriString());
         return ResponseEntity.created(uri).body(userService.saveUser(user));
     }
 

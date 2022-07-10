@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable();
 
-        // This is so we can fetch from a React application
+        // This is so we can fetch from a React application using local host
         http.cors().configurationSource(request -> {
             var cors = new CorsConfiguration();
             cors.setAllowedOrigins(List.of("http://localhost:3000"));
@@ -55,12 +55,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         }).and();
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers("/api/login/**").permitAll();
-        http.authorizeRequests().antMatchers("/api/users").permitAll();
 
+        // Requests that anyone should be able to make
+        http.authorizeRequests().antMatchers(POST, "/api/user/register").permitAll();
+        http.authorizeRequests().antMatchers("/api/login").permitAll();
 
-        http.authorizeRequests().antMatchers(GET, "/api/user/**").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(POST, "api/user/save/**").hasAnyAuthority("ROLE_ADMIN");
+        // Requests that only certain members should be able to make.
+        //http.authorizeRequests().antMatchers("/api/users").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers("/api/users").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers("/api/user/AddRoleToUser").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers("/api/user/role").hasAnyAuthority("ROLE_ADMIN");
 
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(customAuthenticationFilter);
